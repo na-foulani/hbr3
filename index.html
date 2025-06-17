@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉 Happy Birthday RIM 🎉</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('background.jpg') center/cover no-repeat fixed;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .title {
+            font-size: clamp(2rem, 6vw, 4rem);
+            color: #FF69B4;
+            text-shadow: 0 0 20px #FF69B4, 0 0 40px #FF1493;
+            animation: glow 2s ease-in-out infinite alternate;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #FF69B4, 0 0 40px #FF1493; }
+            to { text-shadow: 0 0 30px #FF69B4, 0 0 60px #FF1493, 0 0 80px #FF69B4; }
+        }
+
+        .welcome-screen {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .instructions {
+            font-size: 1.2rem;
+            margin: 20px 0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .start-btn, .restart-btn, .photo-book-btn {
+            background: linear-gradient(45deg, #FF69B4, #FF1493);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 20, 147, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .start-btn:hover, .restart-btn:hover, .photo-book-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 20, 147, 0.6);
+        }
+
+        .game-area {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 20px auto;
+            display: none;
+        }
+
+        .hidden-gif {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('1.gif') center/cover no-repeat;
+            z-index: 1;
+        }
+
+        .card-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #FFB3E6, #E6B3FF);
+            border: 2px solid #FF69B4;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+        }
+
+        .card.flipping {
+            animation: flip 0.6s ease-in-out;
+        }
+
+        .card.correct {
+            animation: vanish 0.5s ease-in-out forwards;
+        }
+
+        .card.wrong {
+            animation: shake 0.5s ease-in-out;
+            background: linear-gradient(135deg, #FFB3B3, #FF8080);
+        }
+
+        @keyframes flip {
+            0% { transform: rotateY(0deg); }
+            50% { transform: rotateY(90deg); }
+            100% { transform: rotateY(0deg); }
+        }
+
+        @keyframes vanish {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .phase-indicator {
+            font-size: 1.5rem;
+            color: #FF69B4;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .progress-display {
+            font-size: 1.2rem;
+            color: #333;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .restart-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            padding: 10px 20px;
+            font-size: 1rem;
+            display: none;
+        }
+
+        .photo-book-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            display: none;
+            max-width: calc(100vw - 60px);
+        }
+
+        /* Celebration Elements */
+        .firework {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .balloon {
+            position: fixed;
+            width: 50px;
+            height: 70px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            bottom: -100px;
+            animation: floatUp 8s linear infinite;
+            pointer-events: none;
+            z-index: 30;
+        }
+
+        @keyframes floatUp {
+            from {
+                transform: translateY(0) rotate(0deg);
+                bottom: -100px;
+            }
+            to {
+                transform: translateY(-20px) rotate(360deg);
+                bottom: 100vh;
+            }
+        }
+
+        .sphere {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .sphere:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .particle {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 45;
+        }
+
+        /* Photo Gallery Modal */
+        .photo-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+
+        .photo-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .photo-content img, .photo-content video {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 10px;
+        }
+
+        .photo-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 105, 180, 0.8);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .photo-nav.prev { left: -60px; }
+        .photo-nav.next { right: -60px; }
+
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .dance-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 60;
+            pointer-events: none;
+            animation: danceScale 2s ease-in-out;
+        }
+
+        @keyframes danceScale {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .game-area {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .card {
+                font-size: 1.2rem;
+            }
+            
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .welcome-screen {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .sphere {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-area {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .card {
+                font-size: 1rem;
+            }
+            
+            .photo-nav.prev { left: -40px; }
+            .photo-nav.next { right: -40px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="welcome-screen">
+            <h1 class="title">🎉 Happy Birthday RIM 🎉</h1>
+            <div class="instructions">
+                <p>🎮 <strong>How to Play:</strong></p>
+                <p>1. <strong>Memory Phase:</strong> Click cards to see letters and remember their positions</p>
+                <p>2. <strong>Sequence Phase:</strong> Click cards to spell "HAPPY BIRTHDAY RIM" in order</p>
+                <p>3. Watch as each correct card reveals a hidden surprise!</p>
+                <p>4. Complete all 15 letters for an amazing celebration! 🎊</p>
+            </div>
+            <button class="start-btn" onclick="startGame()">🚀 Start the Magic!</button>
+        </div>
+
+        <!-- Game Area -->
+        <div class="phase-indicator" id="phaseIndicator" style="display: none;"></div>
+        <div class="progress-display" id="progressDisplay" style="display: none;"></div>
+        <div class="game-area" id="gameArea">
+            <div class="hidden-gif"></div>
+            <div class="card-grid" id="cardGrid"></div>
+        </div>
+    </div>
+
+    <!-- Control Buttons -->
+    <button class="restart-btn" id="restartBtn" onclick="restartGame()">🔄 Restart</button>
+    <button class="photo-book-btn" id="photoBookBtn" onclick="openPhotoGallery()">📸 Photo Gallery</button>
+
+    <!-- Photo Gallery Modal -->
+    <div class="photo-modal" id="photoModal">
+        <div class="photo-content">
+            <button class="close-modal" onclick="closePhotoGallery()">×</button>
+            <button class="photo-nav prev" onclick="prevPhoto()">‹</button>
+            <button class="photo-nav next" onclick="nextPhoto()">›</button>
+            <img id="currentPhoto" src="" alt="Photo">
+            <video id="currentVideo" controls style="display: none;"></video>
+        </div>
+    </div>
+
+    <script>
+        // Game State Variables
+        let gamePhase = 'welcome'; // 'welcome', 'memory', 'sequence', 'completed'
+        let isAnimating = false;
+        let currentSequenceIndex = 0;
+        let memoryPhaseClicks = 0;
+        let celebrationActive = false;
+
+        // Target sequence
+        const targetSequence = "HAPPYBIRTHDAYRIM";
+        const letters = targetSequence.split('');
+
+        // Audio elements
+        const correctSound = new Audio('1.wav');
+        const wrongSound = new Audio('2.wav');
+        const celebrationSongs = [
+            new Audio('song1.mp3'),
+            new Audio('song2.mp3'), 
+            new Audio('song3.mp3')
+        ];
+
+        // Media items for spheres
+        const mediaItems = [
+            { type: 'song', file: 'song1.mp3', symbol: '🎵', color: '#FFB3E6', dance: 'dance1.gif' },
+            { type: 'song', file: 'song2.mp3', symbol: '🎶', color: '#B3E5FF', dance: 'dance2.gif' },
+            { type: 'song', file: 'song3.mp3', symbol: '🎤', color: '#E6FFB3', dance: 'dance3.gif' },
+            { type: 'video', file: 'video1.mp4', symbol: '🎬', color: '#FFCCCB' },
+            { type: 'video', file: 'video2.mp4', symbol: '🎭', color: '#D1C4E9' },
+            { type: 'video', file: 'video3.mp4', symbol: '📷', color: '#C8E6C9' }
+        ];
+
+        // Photo gallery
+        let photoGallery = [];
+        let currentPhotoIndex = 0;
+
+        // Initialize photo gallery
+        for (let i = 1; i <= 20; i++) {
+            photoGallery.push({
+                type: 'photo',
+                src: `photo${i}.jpg`
+            });
+        }
+        for (let i = 1; i <= 5; i++) {
+            photoGallery.push({
+                type: 'video',
+                src: `video${i}.mp4`
+            });
+        }
+
+        // Game Initialization
+        function startGame() {
+            gamePhase = 'memory';
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('gameArea').style.display = 'block';
+            document.getElementById('phaseIndicator').style.display = 'block';
+            document.getElementById('progressDisplay').style.display = 'block';
+            document.getElementById('restartBtn').style.display = 'block';
+            
+            createCardGrid();
+            updatePhaseIndicator();
+            updateProgressDisplay();
+        }
+
+        function restartGame() {
+            // Clean up existing elements
+            clearCelebrationElements();
+            
+            // Reset game state
+            gamePhase = 'welcome';
+            isAnimating = false;
+            currentSequenceIndex = 0;
+            memoryPhaseClicks = 0;
+            celebrationActive = false;
+            
+            // Reset UI
+            document.getElementById('welcomeScreen').style.display = 'block';
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('phaseIndicator').style.display = 'none';
+            document.getElementById('progressDisplay').style.display = 'none';
+            document.getElementById('restartBtn').style.display = 'none';
+            document.getElementById('photoBookBtn').style.display = 'none';
+            
+            // Clear card grid
+            document.getElementById('cardGrid').innerHTML = '';
+        }
+
+        function createCardGrid() {
+            const cardGrid = document.getElementById('cardGrid');
+            cardGrid.innerHTML = '';
+            
+            // Shuffle letters for random placement
+            const shuffledLetters = [...letters].sort(() => Math.random() - 0.5);
+            
+            for (let i = 0; i < 16; i++) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.textContent = '?';
+                card.dataset.index = i;
+                card.dataset.letter = shuffledLetters[i] || '';
+                card.addEventListener('click', () => onCardClick(card));
+                cardGrid.appendChild(card);
+            }
+        }
+
+        function onCardClick(card) {
+            // Prevent double processing
+            if (isAnimating || card.classList.contains('processed')) return;
+            
+            if (gamePhase === 'memory') {
+                handleMemoryPhase(card);
+            } else if (gamePhase === 'sequence') {
+                handleSequencePhase(card);
+            }
+        }
+
+        function handleMemoryPhase(card) {
+            isAnimating = true;
+            memoryPhaseClicks++;
+            
+            // Show letter with flip animation
+            card.classList.add('flipping');
+            
+            setTimeout(() => {
+                card.textContent = card.dataset.letter;
+            }, 300);
+            
+            setTimeout(() => {
+                card.textContent = '?';
+                card.classList.remove('flipping');
+                isAnimating = false;
+                
+                // Transition to sequence phase after some exploration
+                if (memoryPhaseClicks >= 8) {
+                    gamePhase = 'sequence';
+                    updatePhaseIndicator();
+                }
+            }, 1000);
+        }
+
+        function handleSequencePhase(card) {
+            const expectedLetter = targetSequence[currentSequenceIndex];
+            const cardLetter = card.dataset.letter;
+            
+            if (cardLetter === expectedLetter) {
+                handleCorrectCard(card);
+            } else {
+                handleWrongCard(card);
+            }
+        }
+
+        function handleCorrectCard(card) {
+            isAnimating = true;
+            
+            // Play correct sound BEFORE animation
+            correctSound.currentTime = 0;
+            correctSound.play().catch(() => {}); // Handle audio permission issues
+            
+            // Mark as processed and vanish
+            card.classList.add('processed', 'correct');
+            currentSequenceIndex++;
+            
+            setTimeout(() => {
+                card.remove();
+                isAnimating = false;
+                
+                updateProgressDisplay();
+                
+                // Check if game completed
+                if (currentSequenceIndex >= targetSequence.length) {
+                    gamePhase = 'completed';
+                    startCelebration();
+                }
+            }, 500);
+        }
+
+        function handleWrongCard(card) {
+            isAnimating = true;
+            
+            // Play wrong sound
+            wrongSound.currentTime = 0;
+            wrongSound.play().catch(() => {});
+            
+            // Shake animation
+            card.classList.add('wrong');
+            
+            setTimeout(() => {
+                card.classList.remove('wrong');
+                isAnimating = false;
+            }, 500);
+        }
+
+        function updatePhaseIndicator() {
+            const indicator = document.getElementById('phaseIndicator');
+            if (gamePhase === 'memory') {
+                indicator.textContent = '🧠 Memory Building Phase - Explore the cards!';
+            } else if (gamePhase === 'sequence') {
+                indicator.textContent = '✨ Sequence Phase - Spell "HAPPY BIRTHDAY RIM"!';
+            } else if (gamePhase === 'completed') {
+                indicator.textContent = '🎉 Celebration Time!';
+            }
+        }
+
+        function updateProgressDisplay() {
+            const display = document.getElementById('progressDisplay');
+            const revealed = targetSequence.substring(0, currentSequenceIndex);
+            const remaining = targetSequence.substring(currentSequenceIndex);
+            
+            display.innerHTML = `<span style="color: #4CAF50; font-weight: bold;">${revealed}</span><span style="color: #999;">${remaining}</span>`;
+        }
+
+        // Celebration Functions
+        function startCelebration() {
+            celebrationActive = true;
+            document.getElementById('photoBookBtn').style.display = 'block';
+            
+            // Start all celebration effects
+            createFireworks();
+            startBalloonStream();
+            dropPhysicsSpheres();
+            
+            // Play celebration music
+            const randomSong = celebrationSongs[Math.floor(Math.random() * celebrationSongs.length)];
+            randomSong.currentTime = 0;
+            randomSong.play().catch(() => {});
+        }
+
+        function createFireworks() {
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    if (celebrationActive) launchFirework();
+                }, i * 800);
+            }
+            
+            // Continue fireworks every few seconds
+            const fireworkInterval = setInterval(() => {
+                if (!celebrationActive) {
+                    clearInterval(fireworkInterval);
+                    return;
+                }
+                launchFirework();
+            }, 3000);
+        }
+
+        function launchFirework() {
+            const colors = ['#FFD700', '#C0C0C0', '#FF69B4', '#87CEEB'];
+            const startX = Math.random() * window.innerWidth;
+            const startY = Math.random() * (window.innerHeight * 0.6) + window.innerHeight * 0.2;
+            
+            // Create explosion particles
+            for (let i = 0; i < 150; i++) {
+                createFireworkParticle(startX, startY, colors[Math.floor(Math.random() * colors.length)]);
+            }
+        }
+
+        function createFireworkParticle(x, y, color) {
+            const particle = document.createElement('div');
+            particle.className = 'firework';
+            particle.style.backgroundColor = color;
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.boxShadow = `0 0 10px ${color}`;
+            
+            document.body.appendChild(particle);
+            
+            // Random trajectory
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 200 + 50;
+            const vx = Math.cos(angle) * velocity;
+            const vy = Math.sin(angle) * velocity;
+            
+            let currentX = x;
+            let currentY = y;
+            let currentVy = vy;
+            const gravity = 300;
+            
+            const startTime = Date.now();
+            const duration = 2000;
+            
+            function animate() {
+                const elapsed = (Date.now() - startTime) / 1000;
+                
+                if (elapsed > duration / 1000) {
+                    particle.remove();
+                    return;
+                }
+                
+                currentY += currentVy * elapsed;
+                currentVy += gravity * elapsed;
+                currentX += vx * elapsed;
+                
+                particle.style.left = Math.max(0, Math.min(window.innerWidth, currentX)) + 'px';
+                particle.style.top = Math.max(0, Math.min(window.innerHeight, currentY)) + 'px';
+                particle.style.opacity = 1 - (elapsed / (duration / 1000));
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        function startBalloonStream() {
+            const balloonColors = ['#FF69B4', '#87CEEB', '#98FB98', '#FFB6C1', '#DDA0DD', '#F0E68C'];
+            
+            const balloonInterval = setInterval(() => {
+                if (!celebrationActive) {
+                    clearInterval(balloonInterval);
+                    return;
+                }
+                createBalloon(balloonColors[Math.floor(Math.random() * balloonColors.length)]);
+            }, 800);
+        }
+
+        function createBalloon(color) {
+            const balloon = document.createElement('div');
+            balloon.className = 'balloon';
+            balloon.style.backgroundColor = color;
+            balloon.style.left = (Math.random() * (window.innerWidth - 50)) + 'px';
+            balloon.style.animationDuration = (6 + Math.random() * 4) + 's';
+            
+            document.body.appendChild(balloon);
+            
+            // Remove after animation
+            setTimeout(() => {
+                if (balloon.parentNode) balloon.remove();
+            }, 10000);
+        }
+
+        function dropPhysicsSpheres() {
+            mediaItems.forEach((item, index) => {
+                setTimeout(() => {
+                    if (celebrationActive) createPhysicsSphere(item, index);
+                }, index * 500);
+            });
+        }
+
+        function createPhysicsSphere(mediaItem, index) {
+            const sphere = document.createElement('div');
+            sphere.className = 'sphere';
+            sphere.style.backgroundColor = mediaItem.color;
+            sphere.textContent = mediaItem.symbol;
+            sphere.dataset.media = JSON.stringify(mediaItem);
+            
+            // Start position (top edge, random X)
+            const startX = Math.random() * (window.innerWidth - 60);
+            sphere.style.left = Math.max(0, Math.min(window.innerWidth - 60, startX)) + 'px';
+            sphere.style.top = '-60px';
+            
+            document.body.appendChild(sphere);
+            
+            // Physics animation
+            let y = -60;
+            let vy = 0;
+            const gravity = 0.5;
+            const bounce = -0.7;
+            const groundY = window.innerHeight - 60;
+            let hasFloated = false;
+            
+            sphere.addEventListener('click', () => {
+                playMediaFromSphere(sphere, mediaItem);
+            });
+            
+            function animate() {
+                vy += gravity;
+                y += vy;
+                
+                // Bounce at ground
+                if (y >= groundY && vy > 0) {
+                    y = groundY;
+                    vy *= bounce;
+                    
+                    // After bounce, start floating
+                    if (Math.abs(vy) < 1 && !hasFloated) {
+                        hasFloated = true;
+                        startFloating();
+                    }
+                }
+                
+                sphere.style.top = Math.max(-60, Math.min(groundY, y)) + 'px';
+                
+                if (!hasFloated) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            
+            function startFloating() {
+                // Gentle floating motion
+                let floatTime = 0;
+                function float() {
+                    if (!celebrationActive || !sphere.parentNode) return;
+                    
+                    floatTime += 0.02;
+                    const floatY = groundY + Math.sin(floatTime) * 20;
+                    sphere.style.top = floatY + 'px';
+                    
+                    requestAnimationFrame(float);
+                }
+                float();
+            }
+            
+            animate();
+        }
+
+        function playMediaFromSphere(sphere, mediaItem) {
+            // Create burst particles
+            createBurstParticles(sphere);
+            
+            if (mediaItem.type === 'song') {
+                const audio = new Audio(mediaItem.file);
+                audio.currentTime = 0;
+                audio.play().catch(() => {});
+                
+                // Show dance overlay
+                showDanceOverlay(mediaItem.dance);
+            } else if (mediaItem.type === 'video') {
+                // Create video modal or play inline
+                playVideo(mediaItem.file);
+            }
+        }
+
+        function createBurstParticles(element) {
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.backgroundColor = ['#FFD700', '#FF69B4', '#87CEEB'][Math.floor(Math.random() * 3)];
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                
+                document.body.appendChild(particle);
+                
+                const angle = (Math.PI * 2 * i) / 20;
+                const velocity = 100;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+                
+                let x = centerX;
+                let y = centerY;
+                
+                const startTime = Date.now();
+                
+                function animateParticle() {
+                    const elapsed = (Date.now() - startTime) / 1000;
+                    
+                    if (elapsed > 1) {
+                        particle.remove();
+                        return;
+                    }
+                    
+                    x += vx * elapsed;
+                    y += vy * elapsed;
+                    
+                    particle.style.left = x + 'px';
+                    particle.style.top = y + 'px';
+                    particle.style.opacity = 1 - elapsed;
+                    
+                    requestAnimationFrame(animateParticle);
+                }
+                
+                animateParticle();
+            }
+        }
+
+        function showDanceOverlay(danceGif) {
+            const overlay = document.createElement('div');
+            overlay.className = 'dance-overlay';
+            overlay.style.backgroundImage = `url(${danceGif})`;
+            
+            document.body.appendChild(overlay);
+            
+            setTimeout(() => {
+                overlay.remove();
+            }, 2000);
+        }
+
+        function playVideo(videoFile) {
+            // Simple video play - could be enhanced with modal
+            const video = document.createElement('video');
+            video.src = videoFile;
+            video.controls = true;
+            video.autoplay = true;
+            video.style.position = 'fixed';
+            video.style.top = '50%';
+            video.style.left = '50%';
+            video.style.transform = 'translate(-50%, -50%)';
+            video.style.maxWidth = '80%';
+            video.style.maxHeight = '80%';
+            video.style.zIndex = '100';
+            video.style.borderRadius = '10px';
+            
+            const backdrop = document.createElement('div');
+            backdrop.style.position = 'fixed';
+            backdrop.style.top = '0';
+            backdrop.style.left = '0';
+            backdrop.style.width = '100%';
+            backdrop.style.height = '100%';
+            backdrop.style.backgroundColor = 'rgba(0,0,0,0.8)';
+            backdrop.style.zIndex = '99';
+            
+            backdrop.addEventListener('click', () => {
+                video.pause();
+                backdrop.remove();
+                video.remove();
+            });
+            
+            document.body.appendChild(backdrop);
+            document.body.appendChild(video);
+            
+            video.addEventListener('ended', () => {
+                backdrop.remove();
+                video.remove();
+            });
+        }
+
+        function clearCelebrationElements() {
+            celebrationActive = false;
+            
+            // Remove all celebration elements
+            document.querySelectorAll('.firework, .balloon, .sphere, .particle, .dance-overlay').forEach(el => {
+                el.remove();
+            });
+            
+            // Stop all audio
+            celebrationSongs.forEach(song => {
+                song.pause();
+                song.currentTime = 0;
+            });
+        }
+
+        // Photo Gallery Functions
+        function openPhotoGallery() {
+            document.getElementById('photoModal').style.display = 'flex';
+            showPhoto(0);
+        }
+
+        function closePhotoGallery() {
+            document.getElementById('photoModal').style.display = 'none';
+            
+            // Stop any playing video
+            const video = document.getElementById('currentVideo');
+            video.pause();
+        }
+
+        function showPhoto(index) {
+            currentPhotoIndex = index;
+            const item = photoGallery[index];
+            const img = document.getElementById('currentPhoto');
+            const video = document.getElementById('currentVideo');
+            
+            if (item.type === 'photo') {
+                img.src = item.src;
+                img.style.display = 'block';
+                video.style.display = 'none';
+                video.pause();
+            } else if (item.type === 'video') {
+                video.src = item.src;
+                video.style.display = 'block';
+                img.style.display = 'none';
+            }
+        }
+
+        function nextPhoto() {
+            const nextIndex = (currentPhotoIndex + 1) % photoGallery.length;
+            showPhoto(nextIndex);
+        }
+
+        function prevPhoto() {
+            const prevIndex = (currentPhotoIndex - 1 + photoGallery.length) % photoGallery.length;
+            showPhoto(prevIndex);
+        }
+
+        // Preload critical audio files
+        function preloadAudio() {
+            correctSound.preload = 'auto';
+            wrongSound.preload = 'auto';
+            celebrationSongs.forEach(song => {
+                song.preload = 'auto';
+            });
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            preloadAudio();
+            
+            // Add keyboard support for photo gallery
+            document.addEventListener('keydown', (e) => {
+                const modal = document.getElementById('photoModal');
+                if (modal.style.display === 'flex') {
+                    if (e.key === 'ArrowRight') nextPhoto();
+                    if (e.key === 'ArrowLeft') prevPhoto();
+                    if (e.key === 'Escape') closePhotoGallery();
+                }
+            });
+            
+            // Handle window resize for responsive elements
+            window.addEventListener('resize', () => {
+                // Reposition any out-of-bounds spheres
+                document.querySelectorAll('.sphere').forEach(sphere => {
+                    const rect = sphere.getBoundingClientRect();
+                    if (rect.right > window.innerWidth) {
+                        sphere.style.left = (window.innerWidth - 60) + 'px';
+                    }
+                    if (rect.bottom > window.innerHeight) {
+                        sphere.style.top = (window.innerHeight - 60) + 'px';
+                    }
+                });
+            });
+        });
+
+        // Touch support for mobile devices
+        document.addEventListener('touchstart', (e) => {
+            // Prevent double-tap zoom on game elements
+            const target = e.target;
+            if (target.classList.contains('card') || target.classList.contains('sphere')) {
+                e.preventDefault();
+            }
+        });
+
+        // Error handling for missing assets
+        window.addEventListener('error', (e) => {
+            // Log error but don't break the game
+            console.log('Asset loading error:', e.filename || e.target?.src);
+        });
+
+        // Fallback for browsers that don't support certain features
+        if (!window.requestAnimationFrame) {
+            window.requestAnimationFrame = function(callback) {
+                return setTimeout(callback, 16);
+            };
+        }
+    </script>
+</body>
+</html>
